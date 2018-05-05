@@ -1,0 +1,59 @@
+mport org.osbot.rs07.api.filter.Filter;
+import org.osbot.rs07.api.model.NPC;
+import org.osbot.rs07.script.Script;
+import org.osbot.rs07.script.ScriptManifest;
+import org.osbot.rs07.utility.ConditionalSleep;
+
+@ScriptManifest(info = "", logo = "", author = "Dab in a Lab", version = 1.0 , name = "First Script")
+
+public class Main extends Script {
+    //ALT + Enter = Implement Methods
+    //ALT + O = Implement Methods
+
+    @Override
+    public void onStart() throws InterruptedException {
+        super.onStart();
+        //Anything placed here runs once
+        log("Welcome youglin");
+    }
+
+    @Override
+    public int onLoop() throws InterruptedException {
+        //Anything placed here will loop every 600ms {
+
+        NPC goblin = getNpcs().closest(new Filter<NPC>() {
+            @Override
+            public boolean match(NPC npc) {
+                return npc != null && npc.exists() && npc.getName().equals("Goblin") &&
+                        getMap().canReach(npc) && npc.getHealthPercent() > 0 && npc.getInteracting() == null
+                        && !myPlayer().isUnderAttack() && !npc.isAnimating();
+            }
+        });
+
+        if (!getCombat().isFighting()) ;
+        {
+            if (goblin != null) {
+                    if (goblin.interact("Attack")) {
+                            final boolean sleep = new ConditionalSleep(3000,1000) {
+                                @Override
+                                public boolean condition() throws InterruptedException {
+                            {
+                                return getCombat().isFighting();
+
+                            }
+                        }
+
+                    }.sleep();
+                }
+            }
+        }
+        return 800;
+    }
+
+    @Override
+    public void onExit() throws InterruptedException {
+    log("Thank you, come again");
+    }
+
+
+}
